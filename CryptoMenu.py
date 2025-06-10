@@ -2,15 +2,10 @@
 from Crypto.Util import number
 from tkinter import filedialog
 import CSI2108_StreamCipher_FARROW_10653054
+import CSI2108_KeyExchange_FARROW_10653054
 #p = number.getPrime(2048)
 #q = number.getPrime(2048)
-
 #print(p * q)
-
-
-CSI2108_StreamCipher_FARROW_10653054.encrypt()
-
-
 
 
 def optionsMenu():
@@ -27,9 +22,19 @@ def optionsMenu():
         choice = input('Enter an option: ')
 
         if choice == '1':
-            pass
+            plaintext = chooseType()
+            if plaintext:
+                print(CSI2108_StreamCipher_FARROW_10653054.encryptHelper(plaintext))
+            else:
+                print('No plaintext selected')
+
         if choice == '2':
-            pass
+            ciphertext = chooseType()
+            if ciphertext:
+                print(CSI2108_StreamCipher_FARROW_10653054.decryptHelper(ciphertext))
+            else:
+                print('No ciphertext selected')
+
         if choice == '3':
             pass
         if choice == '4':
@@ -46,10 +51,6 @@ def optionsMenu():
             print('not an option')
 
 
-
-
-
-
 def chooseType():
     while True:
         print('1. Submit a file (with text)')
@@ -61,19 +62,19 @@ def chooseType():
             file_path = filedialog.askopenfilename(title="Select a File", filetypes=[("Text files", "*.txt"), ("All files", "*.*")])
             try:
                 file = open(file_path, 'r')
-                plaintext = file.read()
-                print(plaintext)
+                plainORcipher = file.read()
             except:
-                print('ERROR - No file selected')
-                return 0 #!!!! will be used to check if a plaintext was actually entered
+                return 0
             
         if choice == '2':
-            plaintext = input('Enter plaintext: ')
+            plainORcipher = input('Enter plaintext: ')
         
-        return plaintext
+        return plainORcipher
+    
 
 
+p = number.getPrime(2048)
+q = number.getPrime(2048)
+possibleE, n, phi = CSI2108_KeyExchange_FARROW_10653054.findinge(p, q)
 
-
-
-
+print(possibleE)

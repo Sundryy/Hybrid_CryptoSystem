@@ -1,3 +1,8 @@
+#assigns the starting LFSR flip - flop values from FF15 to FF0, followed by P values in the same array from P0 to Pm-1
+LFSR1values = [0,0,1,1,0,0,0,0,1,0,0,1,1,0,1,1,1,0,1]
+LFSR2values = [0,0,1,1,0,1,1,1,0,0,1,1,1,0,0,1,0,0]
+LFSR3values = [1,0,1,0,0,0,1,1,1,0,1,1,0,0,0,1,0]
+LFSR4values = [1,0,1,1,0,1,0,0,1,1,1,0,1,1,0,1,0,1]
 
 #Encrypts plaintext based on chosen LFSR values
 def encrypt(LFSR1,LFSR2,LFSR3,LFSR4, X):
@@ -11,9 +16,6 @@ def encrypt(LFSR1,LFSR2,LFSR3,LFSR4, X):
     y = ''
     k = []
     clocks = 0
-
-    #FOR MARKING PURPOSES -- prints plaintext
-    print('\nPlaintext: \n', X, '\n')
 
     #turn X string into binary
     for letter in X:
@@ -239,43 +241,14 @@ def decrypt(LFSR1,LFSR2,LFSR3,LFSR4, y):
     #returns plaintext
     return plaintext
 
-    
-
-#assigns the starting LFSR flip - flop values from FF15 to FF0, followed by P values in the same array from P0 to Pm-1
-LFSR1values = [0,0,1,1,0,0,0,0,1,0,0,1,1,0,1,1,1,0,1]
-LFSR2values = [0,0,1,1,0,1,1,1,0,0,1,1,1,0,0,1,0,0]
-LFSR3values = [1,0,1,0,0,0,1,1,1,0,1,1,0,0,0,1,0]
-LFSR4values = [1,0,1,1,0,1,0,0,1,1,1,0,1,1,0,1,0,1]
-X = 'Transfer $571.99 from ABSecure Acc 12345 to Westpac Acc 135791 BSB 3344.'
-
-#prompts user to start encryption
-while True:
-    entry = input('To begin encryption, enter \'Y\': ')
-    if entry.upper() == 'Y':
-        y = encrypt(LFSR1values, LFSR2values, LFSR3values, LFSR4values, X)
-        print('Ciphertext: \n' + y + '\n')
-        break
-
-    else:
-        print('not acceptable entry. Try again.\n')
 
 
-while True:
-    entry = input('To begin decryption, enter \'Y\': ')
-    if entry.upper() == 'Y':
-        x = decrypt(LFSR1values, LFSR2values, LFSR3values, LFSR4values, y)
-        print('Decrypted plaintext: \n' + x + '\n')
-        break
-
-    else:
-        print('not acceptable entry. Try again.\n')
+#helps in calling encryption function from another file
+def encryptHelper(plaintext):
+    return encrypt(LFSR1values,LFSR2values,LFSR3values,LFSR4values,plaintext)
 
 
-
-
-
-
-
-
-
+#helps in calling decryption function from another file
+def decryptHelper(ciphertext):
+    return decrypt(LFSR1values, LFSR2values,LFSR3values, LFSR4values, ciphertext)
 
