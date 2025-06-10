@@ -1,4 +1,8 @@
-My personal list of things I wish to add.
+34/35 Portfolio Part 1 (Stream cipher & Block cipher)
+35/35 Portfolio Part 2 (RSA key exchange, Hash function & RSA signature
+
+
+My personal list of things I wish to do with this crypto system
 
 1. Menu functionality for all functions to be used within a single file.
 3. Add in Nonce values to stream ciphers and use objects to have multiple objects in use at once.
