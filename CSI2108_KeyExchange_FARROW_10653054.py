@@ -163,7 +163,7 @@ def encryption(publicKey, x):
     #stores decimal encrypted blocks
     encryptedBlockDecimals = []
     
-    #split key into 25-bit blocks
+    #split key into 4090-bit blocks
     for bit in range(0, len(x), 25):
         #store plaintext block into array 
         block = str(x[bit: bit + 25])
@@ -172,7 +172,7 @@ def encryption(publicKey, x):
     #find block lengths and perform encryptions
     for block in range(len(blocks)):
         #stores length of the block
-        blockLengths.append(len(str(blocks[block])))
+        ###########################blockLengths.append(len(str(blocks[block])))
         #convert binary block to decimal
         blockInt = int(blocks[block], 2)
         plaintextDecimals.append(str(blockInt))
@@ -180,11 +180,11 @@ def encryption(publicKey, x):
         encryptedBlockDecimal = squareAndMultiply(blockInt,publicKey[1], publicKey[0])
         encryptedBlockDecimals.append(encryptedBlockDecimal)
         #convert encrypted decimal to binary
-        encryptedBlock = bin(encryptedBlockDecimal)[2:].zfill(blockLengths[block])
+        encryptedBlock = bin(encryptedBlockDecimal)[2:].zfill(25)
         #store encrypted block
         encryptedBlocks.append(encryptedBlock)
 
-
+    '''
     #display binary blocks, its decimal equivalent and the decimal and binary of the encrypted blocks
     print('Plaintext block (binary)  | Plaintext block (decimal) | ciphertext block (decimal) | ciphertext block (binary)')
     for block in range(len(blocks)):
@@ -195,6 +195,7 @@ def encryption(publicKey, x):
         print('plaintext decimal:  ', plainDecimal)
         print('ciphertext decimal: ', str(encryptedBlockDecimals[block]))
         print('ciphertext binary:  ', str(encryptedBlocks[block]), '\n')
+    '''
 
 
     #returns ciphertext blocks
@@ -220,7 +221,7 @@ def decryption(n, privateKey, encryptedBlocks, blockLengths):
         decryptedBinary = decryptedBinary[2:]
         #adds padding to LSB end of block to ensure block lengths of plaintexts pre and post encryption are the same.
         #if a 0 is missed due to how python treats leading zero's, the keystream will miss bits of its keystream, resulting in incorrect decryption.
-        decryptedBinary = decryptedBinary.zfill(blockLengths[block])
+        decryptedBinary = decryptedBinary.zfill(25)
         
         decryptedBlocks.append(decryptedBinary)
 
@@ -252,8 +253,7 @@ if __name__ == '__main__':
     print('=====================================')
     print('d is being calculated. Please wait...')
     print('=====================================\n')
-    d = findingd(e, phi)
-    d = d[0]
+    d = findingD(e, phi)
 
     print('---- VALUES ----\n')
     #outputting values
@@ -281,6 +281,9 @@ if __name__ == '__main__':
 
     #performs decryption on encrypted blocks y
     decryptedCipherText = decryption(publicKey[0],privateKey, y, blockLengths)
+
+
+    print(decryptedCipherText)
 
     #checks original and decrypted plaintext for matching binary sequence
     for bit in range(len(x)):

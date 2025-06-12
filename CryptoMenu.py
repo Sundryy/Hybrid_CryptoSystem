@@ -56,7 +56,11 @@ def optionsMenu():
                 print('No ciphertext selected')
 
         elif choice == '3':
-            pass
+            keyStream = input('Enter the key to secure (binary or plaintext)')
+
+
+
+
         elif choice == '4':
             pass
         elif choice == '5':
@@ -96,15 +100,7 @@ def chooseType():
     
 
 
-#p = number.getPrime(2048)
-#q = number.getPrime(2048)
-#possibleE, n, phi = CSI2108_KeyExchange_FARROW_10653054.findinge(p, q)
 
-#print(possibleE)
-
-
-
-
-
+#starts program
 if __name__ == '__main__':
     optionsMenu()
