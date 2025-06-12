@@ -5,7 +5,7 @@ LFSR3values = [1,0,1,0,0,0,1,1,1,0,1,1,0,0,0,1,0]
 LFSR4values = [1,0,1,1,0,1,0,0,1,1,1,0,1,1,0,1,0,1]
 
 #Encrypts plaintext based on chosen LFSR values
-def encrypt(LFSR1,LFSR2,LFSR3,LFSR4, X):
+def encrypt(X):
     #assigning local variables to be used in the function
     LFSR1 = LFSR1values.copy()
     LFSR2 = LFSR2values.copy()
@@ -22,9 +22,6 @@ def encrypt(LFSR1,LFSR2,LFSR3,LFSR4, X):
         #turns each letter into ascii, then each letter into binary
         binLetter = format(ord(letter), '08b')
         binX += str(binLetter)
-
-    #FOR MARKING PURPOSES -- prints binary of plaintext
-    print('Plaintext (binary):\n', binX, '\n')
 
     #performs as many clocks as needed to generate enough bits in keystream
     while clocks != len(binX):
@@ -109,10 +106,9 @@ def encrypt(LFSR1,LFSR2,LFSR3,LFSR4, X):
         clocks += 1
 
     #FOR MARKING PURPOSES
-    kMarking = ''
+    kStream = ''
     for bit in range(len(k)):
-        kMarking += str(k[bit])
-    print('Keystream: \n', kMarking, '\n')
+        kStream += str(k[bit])
 
 
     #XOR keystream and binary of plaintext
@@ -120,7 +116,7 @@ def encrypt(LFSR1,LFSR2,LFSR3,LFSR4, X):
         y += str((int(binX[bit]) + k[bit]) % 2)
     
     #returns encrypted ciphertext
-    return y
+    return binX, kStream, y
 
 #Decrypts binary ciphertext based on LFSR values
 def decrypt(LFSR1,LFSR2,LFSR3,LFSR4, y):
@@ -240,15 +236,3 @@ def decrypt(LFSR1,LFSR2,LFSR3,LFSR4, y):
 
     #returns plaintext
     return plaintext
-
-
-
-#helps in calling encryption function from another file
-def encryptHelper(plaintext):
-    return encrypt(LFSR1values,LFSR2values,LFSR3values,LFSR4values,plaintext)
-
-
-#helps in calling decryption function from another file
-def decryptHelper(ciphertext):
-    return decrypt(LFSR1values, LFSR2values,LFSR3values, LFSR4values, ciphertext)
-

@@ -128,18 +128,28 @@ def findinge(p, q):
     return possibleE, n, phi
 
 
-#finds d from chosen e and phi
-def findingd(e, phi):
-    #initialise array to store all possible d values
-    possibleD = []
-    #checks every number for possible d
-    for number in range(phi - 1):
-        #number is d if d x e (mod phi) = 1
-        if (number * e) % phi == 1:
-            possibleD.append(number)
-    #returns the d value.
-    return possibleD
+def findingD(e, phi):
+    g, t, y = findingDSetUp(e, phi)
+    #calculates d
+    d = t % phi
+    return d
 
+#finds d from chosen e and phi
+#Performs extended euclidean algorithm
+#https://www.geeksforgeeks.org/python-program-for-basic-and-extended-euclidean-algorithms-2/
+def findingDSetUp(a, b):
+    # Base Case 
+    if a == 0 : 
+        return b, 0, 1
+
+    gcd, x1, y1 = findingDSetUp(b % a, a)
+     
+    # Update x and y using results of recursive 
+    # call
+    x = y1 - (b//a) * x1 
+    y = x1
+
+    return gcd,x,y
 
 #encrypts int value of message x using RSA public key
 def encryption(publicKey, x):
@@ -219,76 +229,67 @@ def decryption(n, privateKey, encryptedBlocks, blockLengths):
 
     return decryptedCipherText
         
-        
+
+if __name__ == '__main__':
+    #plaintext
+    x = "011111110000100000111110010010111101101010111101000100011000111000111110001110110000011111110101000001000111010000011110000110001001110111010010011111100100110011001011111100011011111010110010010100111010101000010110111001011000100001001110100000011000010110001010101100000111000101111010000110000010000001010101011111111001001000001000100110111000110011100110100100001011101110001010000011000011100001101110010010101010100111000010100001101111011010000101011000001010110100111011010111100010010011110000000100111111110101011100100001000111001011101011000101111001000111000001"
+    #prime p
+    p = 8087
+    #prime q
+    q = 8231
+
+    print('\n---- PRIMALITY TEST ----\n')
+    #testing prime p for primality
+    print(millerRabinPrimTest(p))
+    #testing prime q for primality
+    print(millerRabinPrimTest(q))
+
+    #finding n, phi and possible e values from primes
+    possibleE, n, phi = findinge(p, q)
+    e = 9
+
+    #determines d from chosen e and phi
+    print('=====================================')
+    print('d is being calculated. Please wait...')
+    print('=====================================\n')
+    d = findingd(e, phi)
+    d = d[0]
+
+    print('---- VALUES ----\n')
+    #outputting values
+    print('List of possible e values:\n', possibleE, '\n')
+    print('p: ', p)
+    print('q: ', q)
+    print('e: ', e)
+    print('n: ', n)
+    print('phi: ', phi)
+    print('d: ', d ,'\n')
+
+    #RSA key pairs
+    publicKey = [n, e]
+    privateKey = d
+
+    #output encryption
+    print('---- ENCRYPTION / DECRYPTION -----\n')
+    print('Public key:  ( ' + str(publicKey[0]), ', ' + str(publicKey[1]), ')')
+    print('Private key: ' + str(d) + '\n')
+    print('Plaintext: ', x, '\n')
+
+    #performs encryption on plaintext X
+    y, blockLengths = encryption(publicKey, x)
 
 
+    #performs decryption on encrypted blocks y
+    decryptedCipherText = decryption(publicKey[0],privateKey, y, blockLengths)
 
-#plaintext
-x = "011111110000100000111110010010111101101010111101000100011000111000111110001110110000011111110101000001000111010000011110000110001001110111010010011111100100110011001011111100011011111010110010010100111010101000010110111001011000100001001110100000011000010110001010101100000111000101111010000110000010000001010101011111111001001000001000100110111000110011100110100100001011101110001010000011000011100001101110010010101010100111000010100001101111011010000101011000001010110100111011010111100010010011110000000100111111110101011100100001000111001011101011000101111001000111000001"
-#prime p
-p = 8087
-#prime q
-q = 8231
+    #checks original and decrypted plaintext for matching binary sequence
+    for bit in range(len(x)):
+        #if sequence does not match, decryption was unsuccessful
+        if x[bit] != decryptedCipherText[bit]:
+            print('\n\n---- Decryption unsuccessful ----\n')
+            print('plaintexts vary, encryption/decryption failed')
+            exit()
 
-print('\n---- PRIMALITY TEST ----\n')
-#testing prime p for primality
-print(millerRabinPrimTest(p))
-#testing prime q for primality
-print(millerRabinPrimTest(q))
-
-#finding n, phi and possible e values from primes
-possibleE, n, phi = findinge(p, q)
-e = 9
-
-#determines d from chosen e and phi
-print('=====================================')
-print('d is being calculated. Please wait...')
-print('=====================================\n')
-d = findingd(e, phi)
-d = d[0]
-
-print('---- VALUES ----\n')
-#outputting values
-print('List of possible e values:\n', possibleE, '\n')
-print('p: ', p)
-print('q: ', q)
-print('e: ', e)
-print('n: ', n)
-print('phi: ', phi)
-print('d: ', d ,'\n')
-
-#RSA key pairs
-publicKey = [n, e]
-privateKey = d
-
-#output encryption
-print('---- ENCRYPTION / DECRYPTION -----\n')
-print('Public key:  ( ' + str(publicKey[0]), ', ' + str(publicKey[1]), ')')
-print('Private key: ' + str(d) + '\n')
-print('Plaintext: ', x, '\n')
-
-#performs encryption on plaintext X
-y, blockLengths = encryption(publicKey, x)
-
-
-#performs decryption on encrypted blocks y
-decryptedCipherText = decryption(publicKey[0],privateKey, y, blockLengths)
-
-#checks original and decrypted plaintext for matching binary sequence
-for bit in range(len(x)):
-    #if sequence does not match, decryption was unsuccessful
-    if x[bit] != decryptedCipherText[bit]:
-        print('\n\n---- Decryption unsuccessful ----\n')
-        print('plaintexts vary, encryption/decryption failed')
-        exit()
-
-#only occurs on successful decryption
-print('\n\n---- Decryption successful ----\n')
-print('Decrypted plaintext: ', decryptedCipherText)
-
-
-
-
-
-
-
+    #only occurs on successful decryption
+    print('\n\n---- Decryption successful ----\n')
+    print('Decrypted plaintext: ', decryptedCipherText)
