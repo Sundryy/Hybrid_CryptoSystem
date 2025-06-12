@@ -218,11 +218,9 @@ def decrypt(LFSR1,LFSR2,LFSR3,LFSR4, y):
         clocks += 1
     
     #FOR MARKING PURPOSES
-    kMarking = ''
+    kStream = ''
     for bit in range(len(k)):
-        kMarking += str(k[bit])
-    print('Keystream: \n', kMarking, '\n')
-
+        kStream += str(k[bit])
     
     #XOR keystream and encrypted binary, forming decrypted binary of plaintext
     for bit in range(len(y)):
@@ -235,4 +233,4 @@ def decrypt(LFSR1,LFSR2,LFSR3,LFSR4, y):
         plaintext += chr(int(bits, 2))
 
     #returns plaintext
-    return plaintext
+    return y, kStream, plaintext

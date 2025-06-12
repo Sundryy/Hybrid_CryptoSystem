@@ -32,20 +32,26 @@ def optionsMenu():
         choice = input('Enter an option: ')
 
         if choice == '1':
+            print('\n====================\nENCRYPT PLAINTEXT\n=====================')
+
             plaintext = chooseType()
             if plaintext:
                 binPlain, keyStream, binCipher = CSI2108_StreamCipher_FARROW_10653054.encrypt(plaintext)
-
                 print('\n============\n  Results\n============\n')
-            
-
+                print(' Plaintext (binary):', binPlain, '\n')
+                print('         Key stream:', keyStream, '\n')
+                print('Ciphertext (binary):', binCipher, '\n')
             else:
                 print('No plaintext selected')
 
         if choice == '2':
             ciphertext = chooseType()
             if ciphertext:
-                print(CSI2108_StreamCipher_FARROW_10653054.decrypt(ciphertext))
+                binCipher, keyStream, binPlain = CSI2108_StreamCipher_FARROW_10653054.decrypt(ciphertext)
+                print('\n============\n  Results\n============\n')
+                print('Ciphertext (binary):', binCipher, '\n')
+                print('         Key stream:', keyStream, '\n')
+                print(' Plaintext (binary):', binPlain, '\n')
             else:
                 print('No ciphertext selected')
 
