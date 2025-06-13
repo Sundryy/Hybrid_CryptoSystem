@@ -1,4 +1,5 @@
 import random
+import re
 
 #primality test to determine whether a number is prime
 def millerRabinPrimTest(prime):
@@ -162,6 +163,10 @@ def encryption(publicKey, x):
     encryptedBlocks = []
     #stores decimal encrypted blocks
     encryptedBlockDecimals = []
+
+
+
+    encryptedKey = ''
     
     #split key into 4090-bit blocks
     for bit in range(0, len(x), 25):
@@ -171,8 +176,11 @@ def encryption(publicKey, x):
 
     #find block lengths and perform encryptions
     for block in range(len(blocks)):
-        #stores length of the block
-        ###########################blockLengths.append(len(str(blocks[block])))
+
+        #NEED THIS!!!!!
+        blockLength = len(blocks[block])
+
+
         #convert binary block to decimal
         blockInt = int(blocks[block], 2)
         plaintextDecimals.append(str(blockInt))
@@ -180,9 +188,17 @@ def encryption(publicKey, x):
         encryptedBlockDecimal = squareAndMultiply(blockInt,publicKey[1], publicKey[0])
         encryptedBlockDecimals.append(encryptedBlockDecimal)
         #convert encrypted decimal to binary
-        encryptedBlock = bin(encryptedBlockDecimal)[2:].zfill(25)
+        encryptedBlock = bin(encryptedBlockDecimal)[2:]
+        shadowBlock = encryptedBlock
+        #if len(encryptedBlock) < blockLength:
+        encryptedBlock = '/' + str(blockLength) + '/' + encryptedBlock
+
         #store encrypted block
-        encryptedBlocks.append(encryptedBlock)
+        #encryptedBlocks.append(encryptedBlock)
+        encryptedKey += str(encryptedBlock)
+
+    
+
 
     '''
     #display binary blocks, its decimal equivalent and the decimal and binary of the encrypted blocks
@@ -199,20 +215,27 @@ def encryption(publicKey, x):
 
 
     #returns ciphertext blocks
-    return encryptedBlocks, blockLengths
+    return encryptedKey
 
 
 #decryption using private key and value of n in public key
-def decryption(n, privateKey, encryptedBlocks, blockLengths):
+def decryption(n, privateKey, y):
     #store the decrypted blocks in binary
-    decryptedBlocks = []
+
+    EncryptedBlocksPaddings = re.findall(r"\d+", y)
+
     #recreates the binary key as a string
     decryptedCipherText = ''
 
+    decryptedBlocks = []
+
+
     #converts blocks to decimal, decrypts, converts to binary and reforms the plaintext message
-    for block in range(len(encryptedBlocks)):
+    for block in range(1, len(EncryptedBlocksPaddings), 2):
+        print(block)
+        
         #convert binary block ciphertext to decimal
-        blockInt = int(encryptedBlocks[block], 2)
+        blockInt = int(EncryptedBlocksPaddings[block], 2)
         #decrypts the block using the decimal of encrypted block and private key.
         decryptedBlockDecimal = squareAndMultiply(blockInt,privateKey, n)
         #convert to binary
@@ -221,14 +244,14 @@ def decryption(n, privateKey, encryptedBlocks, blockLengths):
         decryptedBinary = decryptedBinary[2:]
         #adds padding to LSB end of block to ensure block lengths of plaintexts pre and post encryption are the same.
         #if a 0 is missed due to how python treats leading zero's, the keystream will miss bits of its keystream, resulting in incorrect decryption.
-        decryptedBinary = decryptedBinary.zfill(25)
+        decryptedBinary = decryptedBinary.zfill(int(EncryptedBlocksPaddings[block - 1]))
         
         decryptedBlocks.append(decryptedBinary)
 
-    for block in decryptedBlocks:
-        decryptedCipherText += str(block)
+        decryptedCipherText += decryptedBinary
 
     return decryptedCipherText
+
         
 
 if __name__ == '__main__':
@@ -276,14 +299,13 @@ if __name__ == '__main__':
     print('Plaintext: ', x, '\n')
 
     #performs encryption on plaintext X
-    y, blockLengths = encryption(publicKey, x)
+    y = encryption(publicKey, x)
 
-
+    print(len(y))
+    print(len(x))
+    
     #performs decryption on encrypted blocks y
-    decryptedCipherText = decryption(publicKey[0],privateKey, y, blockLengths)
-
-
-    print(decryptedCipherText)
+    decryptedCipherText = decryption(publicKey[0],privateKey, y)
 
     #checks original and decrypted plaintext for matching binary sequence
     for bit in range(len(x)):
@@ -296,3 +318,4 @@ if __name__ == '__main__':
     #only occurs on successful decryption
     print('\n\n---- Decryption successful ----\n')
     print('Decrypted plaintext: ', decryptedCipherText)
+    
