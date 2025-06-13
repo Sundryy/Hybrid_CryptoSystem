@@ -3,21 +3,13 @@ from Crypto.Util import number
 from tkinter import filedialog
 import CSI2108_StreamCipher_FARROW_10653054
 import CSI2108_KeyExchange_FARROW_10653054
-#p = number.getPrime(2048)
-#q = number.getPrime(2048)
-#print(p * q)
+
+
 
 
 def optionsMenu():
-    '''
-    print('\n==== generating RSA key pair ====\n\n\n')
-    p = number.getPrime(2048)
-    q = number.getPrime(2048)
-    possibleE, n, phi = CSI2108_KeyExchange_FARROW_10653054.findinge(p, q)
-    e = 13 #very common e values im finding
-    d = CSI2108_KeyExchange_FARROW_10653054.findingD(e, phi)
-    '''
-
+    #generates key pair on program start
+    p, q, possibleE, e, n, phi, publicKey, privateKey = CSI2108_KeyExchange_FARROW_10653054.generateKeyPair()
 
     while True:
         print('1. Encrypt plaintext\n')
@@ -52,11 +44,19 @@ def optionsMenu():
                 print('Ciphertext (binary):', binCipher, '\n')
                 print('         Key stream:', keyStream, '\n')
                 print(' Plaintext (binary):', binPlain, '\n')
+
             else:
                 print('No ciphertext selected')
 
         elif choice == '3':
-            keyStream = input('Enter the key to secure (binary or plaintext)')
+            key = chooseType()
+            if key:
+                cipherKey = CSI2108_KeyExchange_FARROW_10653054.encryption(publicKey, key)
+                print('\n============\n  Results\n============\n')
+                print('Plaintext key:', key, '\n')
+                print('Ciphertext key (binary):', cipherKey, '\n' )
+
+
 
 
 
@@ -77,7 +77,7 @@ def optionsMenu():
 
 def chooseType():
     while True:
-        print('1. Submit a file (with text)')
+        print('1. Submit a file')
         print('2. Enter text')
         print('3. Exit')
         choice = input('Enter an option: ')
@@ -90,7 +90,7 @@ def chooseType():
             except:
                 return 0
             
-        if choice == '2':
+        elif choice == '2':
             plainORcipher = input('Enter plaintext: ')
 
         else:

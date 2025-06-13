@@ -1,5 +1,7 @@
 import random
 import re
+#testing creating 2048 bit prime
+from Crypto.Util import number
 
 #primality test to determine whether a number is prime
 def millerRabinPrimTest(prime):
@@ -152,6 +154,21 @@ def findingDSetUp(a, b):
 
     return gcd,x,y
 
+#testing creating 2048 bit prime
+from Crypto.Util import number
+
+
+def generateKeyPair():
+    print('\n==== generating RSA key pair ====\n\n\n')
+    p = number.getPrime(2048)
+    q = number.getPrime(2048)
+    possibleE, n, phi = findinge(p, q)
+    e = 13 #very common e values im finding
+    privateKey = findingD(e, phi)
+    publicKey = [n, e]
+
+    return p, q, possibleE, e, n, phi, publicKey, privateKey
+
 #encrypts int value of message x using RSA public key
 def encryption(publicKey, x):
     #array of plaintext blocks
@@ -164,20 +181,18 @@ def encryption(publicKey, x):
     #stores decimal encrypted blocks
     encryptedBlockDecimals = []
 
-
-
     encryptedKey = ''
     
     #split key into 4090-bit blocks
-    for bit in range(0, len(x), 25):
+    for bit in range(0, len(x), 4090):
         #store plaintext block into array 
-        block = str(x[bit: bit + 25])
+        block = str(x[bit: bit + 4090])
         blocks.append(block)
 
     #find block lengths and perform encryptions
     for block in range(len(blocks)):
 
-        #NEED THIS!!!!!
+        #length of plaintext key
         blockLength = len(blocks[block])
 
 
@@ -197,43 +212,19 @@ def encryption(publicKey, x):
         #encryptedBlocks.append(encryptedBlock)
         encryptedKey += str(encryptedBlock)
 
-    
-
-
-    '''
-    #display binary blocks, its decimal equivalent and the decimal and binary of the encrypted blocks
-    print('Plaintext block (binary)  | Plaintext block (decimal) | ciphertext block (decimal) | ciphertext block (binary)')
-    for block in range(len(blocks)):
-        plainBinary = str(blocks[block])
-        plainDecimal = str(plaintextDecimals[block])
-        print('Block ',block, ':   ')
-        print('plaintext binary:   ', plainBinary)
-        print('plaintext decimal:  ', plainDecimal)
-        print('ciphertext decimal: ', str(encryptedBlockDecimals[block]))
-        print('ciphertext binary:  ', str(encryptedBlocks[block]), '\n')
-    '''
-
-
     #returns ciphertext blocks
     return encryptedKey
 
 
 #decryption using private key and value of n in public key
 def decryption(n, privateKey, y):
-    #store the decrypted blocks in binary
-
+    #splits padding schemes and seperates into blocks
     EncryptedBlocksPaddings = re.findall(r"\d+", y)
-
     #recreates the binary key as a string
     decryptedCipherText = ''
 
-    decryptedBlocks = []
-
-
     #converts blocks to decimal, decrypts, converts to binary and reforms the plaintext message
     for block in range(1, len(EncryptedBlocksPaddings), 2):
-        print(block)
-        
         #convert binary block ciphertext to decimal
         blockInt = int(EncryptedBlocksPaddings[block], 2)
         #decrypts the block using the decimal of encrypted block and private key.
@@ -242,12 +233,8 @@ def decryption(n, privateKey, y):
         decryptedBinary = bin(decryptedBlockDecimal)
         #removes the '0b' before the binary of block.
         decryptedBinary = decryptedBinary[2:]
-        #adds padding to LSB end of block to ensure block lengths of plaintexts pre and post encryption are the same.
-        #if a 0 is missed due to how python treats leading zero's, the keystream will miss bits of its keystream, resulting in incorrect decryption.
+        #pads block to plaintext block length
         decryptedBinary = decryptedBinary.zfill(int(EncryptedBlocksPaddings[block - 1]))
-        
-        decryptedBlocks.append(decryptedBinary)
-
         decryptedCipherText += decryptedBinary
 
     return decryptedCipherText
@@ -257,26 +244,14 @@ def decryption(n, privateKey, y):
 if __name__ == '__main__':
     #plaintext
     x = "011111110000100000111110010010111101101010111101000100011000111000111110001110110000011111110101000001000111010000011110000110001001110111010010011111100100110011001011111100011011111010110010010100111010101000010110111001011000100001001110100000011000010110001010101100000111000101111010000110000010000001010101011111111001001000001000100110111000110011100110100100001011101110001010000011000011100001101110010010101010100111000010100001101111011010000101011000001010110100111011010111100010010011110000000100111111110101011100100001000111001011101011000101111001000111000001"
-    #prime p
-    p = 8087
-    #prime q
-    q = 8231
+
+    p, q, possibleE, e, n, phi, publicKey, privateKey = generateKeyPair()
 
     print('\n---- PRIMALITY TEST ----\n')
     #testing prime p for primality
-    print(millerRabinPrimTest(p))
+    #print(millerRabinPrimTest(p)) NEED TO FIX THIS!
     #testing prime q for primality
-    print(millerRabinPrimTest(q))
-
-    #finding n, phi and possible e values from primes
-    possibleE, n, phi = findinge(p, q)
-    e = 9
-
-    #determines d from chosen e and phi
-    print('=====================================')
-    print('d is being calculated. Please wait...')
-    print('=====================================\n')
-    d = findingD(e, phi)
+    #print(millerRabinPrimTest(q)) NEED TO FIX THIS!
 
     print('---- VALUES ----\n')
     #outputting values
@@ -286,24 +261,17 @@ if __name__ == '__main__':
     print('e: ', e)
     print('n: ', n)
     print('phi: ', phi)
-    print('d: ', d ,'\n')
-
-    #RSA key pairs
-    publicKey = [n, e]
-    privateKey = d
+    print('d: ', privateKey ,'\n')
 
     #output encryption
     print('---- ENCRYPTION / DECRYPTION -----\n')
     print('Public key:  ( ' + str(publicKey[0]), ', ' + str(publicKey[1]), ')')
-    print('Private key: ' + str(d) + '\n')
+    print('Private key: ' + str(privateKey) + '\n')
     print('Plaintext: ', x, '\n')
 
     #performs encryption on plaintext X
     y = encryption(publicKey, x)
 
-    print(len(y))
-    print(len(x))
-    
     #performs decryption on encrypted blocks y
     decryptedCipherText = decryption(publicKey[0],privateKey, y)
 
