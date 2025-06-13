@@ -26,11 +26,17 @@ def optionsMenu():
         if choice == '1':
             print('\n====================\nENCRYPT PLAINTEXT\n=====================')
 
-            plaintext = chooseType()
-            if plaintext:
-                binPlain, keyStream, binCipher = CSI2108_StreamCipher_FARROW_10653054.encrypt(plaintext)
+            plainText = chooseType()
+
+
+            
+
+
+
+            if plainText:
+                keyStream,binCipher = CSI2108_StreamCipher_FARROW_10653054.encrypt(plainText)
                 print('\n============\n  Results\n============\n')
-                print(' Plaintext (binary):', binPlain, '\n')
+                print(' Plaintext (binary):', plainText, '\n')
                 print('         Key stream:', keyStream, '\n')
                 print('Ciphertext (binary):', binCipher, '\n')
             else:
@@ -39,7 +45,7 @@ def optionsMenu():
         if choice == '2':
             ciphertext = chooseType()
             if ciphertext:
-                binCipher, keyStream, binPlain = CSI2108_StreamCipher_FARROW_10653054.decrypt(ciphertext)
+                keyStream, binPlain = CSI2108_StreamCipher_FARROW_10653054.decrypt(ciphertext)
                 print('\n============\n  Results\n============\n')
                 print('Ciphertext (binary):', binCipher, '\n')
                 print('         Key stream:', keyStream, '\n')
@@ -49,20 +55,27 @@ def optionsMenu():
                 print('No ciphertext selected')
 
         elif choice == '3':
-            key = chooseType()
-            if key:
-                cipherKey = CSI2108_KeyExchange_FARROW_10653054.encryption(publicKey, key)
+            plainKey = chooseType()
+            if plainKey:
+                cipherKey = CSI2108_KeyExchange_FARROW_10653054.encryption(publicKey, plainKey)
                 print('\n============\n  Results\n============\n')
-                print('Plaintext key:', key, '\n')
+                print('Plaintext key:', plainKey, '\n')
                 print('Ciphertext key (binary):', cipherKey, '\n' )
-
-
-
+            else:
+                pass
 
 
 
         elif choice == '4':
-            pass
+            cipherKey = chooseType()
+            if cipherKey:
+                plainKey = CSI2108_KeyExchange_FARROW_10653054.decryption(publicKey[0], privateKey,cipherKey)
+                print('\n============\n  Results\n============\n')
+                print('Cipher key (binary):', cipherKey)
+                print('Plain key (binary):', plainKey)
+            else:
+                pass
+            
         elif choice == '5':
             pass
         elif choice == '6':
@@ -87,6 +100,14 @@ def chooseType():
             try:
                 file = open(file_path, 'r')
                 plainORcipher = file.read()
+                binplainORcipher = ''
+                for letter in plainORcipher:
+                    #convert x to ascii decimal, then binary
+                    binLetter = format(ord(letter), '08b')
+                    binplainORcipher += str(binLetter)
+
+                return binplainORcipher
+            
             except:
                 return 0
             

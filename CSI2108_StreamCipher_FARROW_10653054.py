@@ -17,11 +17,15 @@ def encrypt(X):
     k = []
     clocks = 0
 
+
+    binX = X
+    '''
     #turn X string into binary
     for letter in X:
         #turns each letter into ascii, then each letter into binary
         binLetter = format(ord(letter), '08b')
         binX += str(binLetter)
+    '''
 
     #performs as many clocks as needed to generate enough bits in keystream
     while clocks != len(binX):
@@ -116,7 +120,7 @@ def encrypt(X):
         y += str((int(binX[bit]) + k[bit]) % 2)
     
     #returns encrypted ciphertext
-    return binX, kStream, y
+    return kStream, y
 
 #Decrypts binary ciphertext based on LFSR values
 def decrypt(LFSR1,LFSR2,LFSR3,LFSR4, y):
@@ -233,4 +237,4 @@ def decrypt(LFSR1,LFSR2,LFSR3,LFSR4, y):
         plaintext += chr(int(bits, 2))
 
     #returns plaintext
-    return y, kStream, plaintext
+    return kStream, plaintext
