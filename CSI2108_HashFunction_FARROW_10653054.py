@@ -34,12 +34,15 @@ def squareAndMultiply(base,exponent, modulus):
 def hashFunction(X):
 
     #stores binary x
-    binX = ''
+    binX = X
+    '''
     for letter in X:
         #convert x to ascii decimal, then binary
         binLetter = format(ord(letter), '08b')
         binX += str(binLetter)
+    '''
 
+    
     #pads messages which do not divide evenly by 192-bits
     if len(binX) % 192 != 0:
         uneven = (len(binX) % 192)
@@ -247,10 +250,6 @@ def hashFunction(X):
     for i in outputBlock:
         hash += i
 
-    #compressing 192-bits into 72-bits
-    blockInt = int(hash, 2) % 4722366482869645213695 #highest 72-bit number possible
-    hash = bin(blockInt)[2:].zfill(72)
-
     #converts binary hash digest to ascii characters
     bytesArr = []
     asciiHash = ''
@@ -262,107 +261,109 @@ def hashFunction(X):
 
     return asciiHash
 
-while True:
 
-    print('\n1) Enter a message to hash')
-    print('2) Test hash for second-pre image resistance')
-    print('3) Test collision resistence.')
-    choice = input('\nEnter a number: ')
+if __name__ == '__main__':
+    while True:
 
-    #prints hash of a message (chosen or default)
-    if choice == '1':
-        choice = input('\ntype a message OR press enter to use bank\'s message: ')
-        if choice == '':
-            X = 'Transfer $571.99 from ABSecure Acc 12345 to Westpac Acc 135791 BSB 3344.'
-            hashDigest = hashFunction(X)
-        else:
-            X = choice
-            hashDigest = hashFunction(choice)
+        print('\n1) Enter a message to hash')
+        print('2) Test hash for second-pre image resistance')
+        print('3) Test collision resistence.')
+        choice = input('\nEnter a number: ')
 
-        print('\n\n=------- RESULTS -------=\n')
-        print('Message:', X)
-        print('Length of message:', len(X), 'characters\n')
-        print('Hash digest:', hashDigest)
-        print('Length of hash digest:', len(hashDigest), 'characters')
-
-    #tests for second-pre image resistance
-    elif choice == '2':
-        #counts amount of messages tested
-        count = 0
-        choice = input('\ntype a message OR press enter to use bank\'s message for testing: ')
-        if choice == '':
-            X = 'Transfer $571.99 from ABSecure Acc 12345 to Westpac Acc 135791 BSB 3344.'
-            hashDigest = hashFunction(X)
-        else:
-            X = choice
-            hashDigest = hashFunction(choice)
-        #hashes chosen message
-        XHashDigest = hashFunction(X)
-        #generates random text until collision occurs
-        while True:
-            #chooses random message length
-            length = random.randint(1,10000)
-            randomMessage = ''
-            #generates random message
-            for i in range(length):
-                randomChar = random.choice(string.ascii_letters)
-                randomMessage += randomChar
-            #produces hash digest of random message
-            randomDigest = hashFunction(randomMessage)
-            
-            #no collision, moves onto another test case
-            if XHashDigest != randomDigest:
-                count += 1
-                print(count)
-            #collision occured, prints results
+        #prints hash of a message (chosen or default)
+        if choice == '1':
+            choice = input('\ntype a message OR press enter to use bank\'s message: ')
+            if choice == '':
+                X = 'Transfer $571.99 from ABSecure Acc 12345 to Westpac Acc 135791 BSB 3344.'
+                hashDigest = hashFunction(X)
             else:
-                print('FOUND A COLLISION!')
-                print('=------- RESULTS -------=')
-                print('Message:', X)
-                print('Hash digest:', XHashDigest, '\n')
+                X = choice
+                hashDigest = hashFunction(choice)
 
-                print('Random message: ', randomMessage)
-                print('Hash digest: ', randomDigest)
-                exit()
+            print('\n\n=------- RESULTS -------=\n')
+            print('Message:', X)
+            print('Length of message:', len(X), 'characters\n')
+            print('Hash digest:', hashDigest)
+            print('Length of hash digest:', len(hashDigest), 'characters')
 
-    #testing for collision resistance
-    elif choice == '3':
-        #counts amount of messages tested
-        count = 0
-        while True:
-            #chooses random message length
-            length1 = random.randint(1,10000)
-            length2 = random.randint(1,10000)
-            randomMessage1 = ''
-            randomMessage2 = ''
-            #generates first random message
-            for i in range(length1):
-                randomChar = random.choice(string.ascii_letters)
-                randomMessage1 += randomChar
-
-            #generates second random message
-            for i in range(length2):
-                randomChar = random.choice(string.ascii_letters)
-                randomMessage2 += randomChar
-
-            #produces hash digest of random messages
-            randomDigest1 = hashFunction(randomMessage1)
-            randomDigest2 = hashFunction(randomMessage2)
-            
-            #no collision, moves onto another test case
-            if randomDigest1 != randomDigest2:
-                count += 1
-                print(count)
-            #collision occured, prints results
+        #tests for second-pre image resistance
+        elif choice == '2':
+            #counts amount of messages tested
+            count = 0
+            choice = input('\ntype a message OR press enter to use bank\'s message for testing: ')
+            if choice == '':
+                X = 'Transfer $571.99 from ABSecure Acc 12345 to Westpac Acc 135791 BSB 3344.'
+                hashDigest = hashFunction(X)
             else:
-                print('FOUND A COLLISION!')
-                print('=------- RESULTS -------=')
-                print('Random message 1:', randomMessage1)
-                print('Hash digest:', randomDigest1, '\n')
+                X = choice
+                hashDigest = hashFunction(choice)
+            #hashes chosen message
+            XHashDigest = hashFunction(X)
+            #generates random text until collision occurs
+            while True:
+                #chooses random message length
+                length = random.randint(1,10000)
+                randomMessage = ''
+                #generates random message
+                for i in range(length):
+                    randomChar = random.choice(string.ascii_letters)
+                    randomMessage += randomChar
+                #produces hash digest of random message
+                randomDigest = hashFunction(randomMessage)
+                
+                #no collision, moves onto another test case
+                if XHashDigest != randomDigest:
+                    count += 1
+                    print(count)
+                #collision occured, prints results
+                else:
+                    print('FOUND A COLLISION!')
+                    print('=------- RESULTS -------=')
+                    print('Message:', X)
+                    print('Hash digest:', XHashDigest, '\n')
 
-                print('Random message 2: ', randomMessage2)
-                print('Hash digest: ', randomDigest2)
-                exit()
+                    print('Random message: ', randomMessage)
+                    print('Hash digest: ', randomDigest)
+                    exit()
+
+        #testing for collision resistance
+        elif choice == '3':
+            #counts amount of messages tested
+            count = 0
+            while True:
+                #chooses random message length
+                length1 = random.randint(1,10000)
+                length2 = random.randint(1,10000)
+                randomMessage1 = ''
+                randomMessage2 = ''
+                #generates first random message
+                for i in range(length1):
+                    randomChar = random.choice(string.ascii_letters)
+                    randomMessage1 += randomChar
+
+                #generates second random message
+                for i in range(length2):
+                    randomChar = random.choice(string.ascii_letters)
+                    randomMessage2 += randomChar
+
+                #produces hash digest of random messages
+                randomDigest1 = hashFunction(randomMessage1)
+                randomDigest2 = hashFunction(randomMessage2)
+                
+                #no collision, moves onto another test case
+                if randomDigest1 != randomDigest2:
+                    count += 1
+                    print(count)
+                #collision occured, prints results
+                else:
+                    print('FOUND A COLLISION!')
+                    print('=------- RESULTS -------=')
+                    print('Random message 1:', randomMessage1)
+                    print('Hash digest:', randomDigest1, '\n')
+
+                    print('Random message 2: ', randomMessage2)
+                    print('Hash digest: ', randomDigest2)
+                    exit()
 
 
 

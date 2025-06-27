@@ -1,3 +1,5 @@
+import random
+
 #assigns the starting LFSR flip - flop values from FF15 to FF0, followed by P values in the same array from P0 to Pm-1
 LFSR1values = [0,0,1,1,0,0,0,0,1,0,0,1,1,0,1,1,1,0,1]
 LFSR2values = [0,0,1,1,0,1,1,1,0,0,1,1,1,0,0,1,0,0]
@@ -6,16 +8,27 @@ LFSR4values = [1,0,1,1,0,1,0,0,1,1,1,0,1,1,0,1,0,1]
 
 #Encrypts plaintext based on chosen LFSR values
 def encrypt(X):
+    
+    nonce = random.randint(5000000, 1000000000000)
+    #convert binary to decimal
+    blockInt = int(X, 2)
+    #multiple nonce value into binary
+    blockInt = nonce * blockInt
+    #convert decimal to binary
+    X = bin(blockInt)[2:]
+    
+
     #assigning local variables to be used in the function
     LFSR1 = LFSR1values.copy()
     LFSR2 = LFSR2values.copy()
     LFSR3 = LFSR3values.copy()
     LFSR4 = LFSR4values.copy()
     tempVal = None
-    binX = ''
+    #binX = ''
     y = ''
     k = []
     clocks = 0
+    
 
 
     binX = X

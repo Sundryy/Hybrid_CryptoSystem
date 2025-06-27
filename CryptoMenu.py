@@ -3,6 +3,8 @@ from Crypto.Util import number
 from tkinter import filedialog
 import CSI2108_StreamCipher_FARROW_10653054
 import CSI2108_KeyExchange_FARROW_10653054
+import CSI2108_HashFunction_FARROW_10653054
+import re
 
 
 
@@ -29,18 +31,16 @@ def optionsMenu():
             plainText = chooseType()
 
 
-            
-
-
-
+        
             if plainText:
                 keyStream,binCipher = CSI2108_StreamCipher_FARROW_10653054.encrypt(plainText)
                 print('\n============\n  Results\n============\n')
-                print(' Plaintext (binary):', plainText, '\n')
+                print(' Plaintext (binary | pre-nonce implementation):', plainText, '\n')
                 print('         Key stream:', keyStream, '\n')
                 print('Ciphertext (binary):', binCipher, '\n')
             else:
                 print('No plaintext selected')
+                continue
 
         if choice == '2':
             ciphertext = chooseType()
@@ -50,9 +50,9 @@ def optionsMenu():
                 print('Ciphertext (binary):', binCipher, '\n')
                 print('         Key stream:', keyStream, '\n')
                 print(' Plaintext (binary):', binPlain, '\n')
-
             else:
                 print('No ciphertext selected')
+                continue
 
         elif choice == '3':
             plainKey = chooseType()
@@ -62,9 +62,8 @@ def optionsMenu():
                 print('Plaintext key:', plainKey, '\n')
                 print('Ciphertext key (binary):', cipherKey, '\n' )
             else:
-                pass
-
-
+                print('No plaintext key entered')
+                continue
 
         elif choice == '4':
             cipherKey = chooseType()
@@ -74,10 +73,20 @@ def optionsMenu():
                 print('Cipher key (binary):', cipherKey)
                 print('Plain key (binary):', plainKey)
             else:
-                pass
+                print('No ciphertext key entered')
+                continue
             
         elif choice == '5':
-            pass
+            plainText = chooseType()
+            if plainText:
+                digest = CSI2108_HashFunction_FARROW_10653054.hashFunction(plainText)
+                print('\n============\n  Results\n============\n')
+                print('\n Plaintext (binary):', plainText)
+                print('\n Hash Digest:', digest)
+            else:
+                print('No plaintext entered')
+                continue
+
         elif choice == '6':
             pass
         elif choice == '7':
@@ -94,33 +103,36 @@ def chooseType():
         print('2. Enter text')
         print('3. Exit')
         choice = input('Enter an option: ')
+        binplainORcipher = ''
 
         if choice == '1':
             file_path = filedialog.askopenfilename(title="Select a File", filetypes=[("Text files", "*.txt"), ("All files", "*.*")])
             try:
                 file = open(file_path, 'r')
                 plainORcipher = file.read()
-                binplainORcipher = ''
-                for letter in plainORcipher:
-                    #convert x to ascii decimal, then binary
-                    binLetter = format(ord(letter), '08b')
-                    binplainORcipher += str(binLetter)
-
-                return binplainORcipher
-            
             except:
                 return 0
-            
+           
         elif choice == '2':
             plainORcipher = input('Enter plaintext: ')
-
+        
         else:
             return 0
+
+
+        if re.fullmatch('[01]+', plainORcipher):
+            binplainORcipher = plainORcipher
+
+        else:
+            for letter in plainORcipher:
+                #convert x to ascii decimal, then binary
+                binLetter = format(ord(letter), '08b')
+                binplainORcipher += str(binLetter)
         
-        return plainORcipher
-    
+        return binplainORcipher
 
 
+####!!!!!!MUST DEAL WITH ENTERED TEXT THAT IS NEEDING CONVERSION OR IS ALREADY IN BINARY. SIMPLE SOLUTION BUT TOO TIRED TO DO CURRENTLY.
 
 #starts program
 if __name__ == '__main__':
