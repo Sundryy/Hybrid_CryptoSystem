@@ -32,7 +32,7 @@ def squareAndMultiply(base,exponent, modulus):
 
 
 def hashFunction(X):
-
+    
     #stores binary x
     binX = X
     '''

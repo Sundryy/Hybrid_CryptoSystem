@@ -10,7 +10,7 @@ import re
 
 
 def optionsMenu():
-    #generates key pair on program start
+    #generates RSA key pair
     p, q, possibleE, e, n, phi, publicKey, privateKey = CSI2108_KeyExchange_FARROW_10653054.generateKeyPair()
 
     while True:
@@ -25,67 +25,93 @@ def optionsMenu():
         print('9. Display Public and Private Key Generated\n')
         choice = input('Enter an option: ')
 
+            #OPTIONS CONTAIN X, Y, Keys (if applicable)
+            #oh just create a dictionary within the function call that includes the required things rather than large unfilled sometimes dictionary
+
+
         if choice == '1':
             print('\n====================\nENCRYPT PLAINTEXT\n=====================')
-
             plainText = chooseType()
-
-
-        
             if plainText:
                 keyStream,binCipher = CSI2108_StreamCipher_FARROW_10653054.encrypt(plainText)
-                print('\n============\n  Results\n============\n')
-                print(' Plaintext (binary | pre-nonce implementation):', plainText, '\n')
-                print('         Key stream:', keyStream, '\n')
-                print('Ciphertext (binary):', binCipher, '\n')
+                displayResults(
+                    {
+                        "Plaintext (binary | pre-nonce implementation)": plainText,
+                        "Key stream": keyStream,
+                        "Ciphertext (binary)": binCipher 
+                    }
+                )
             else:
                 print('No plaintext selected')
-                continue
+                #continue
+
 
         if choice == '2':
             ciphertext = chooseType()
             if ciphertext:
                 keyStream, binPlain = CSI2108_StreamCipher_FARROW_10653054.decrypt(ciphertext)
-                print('\n============\n  Results\n============\n')
-                print('Ciphertext (binary):', binCipher, '\n')
-                print('         Key stream:', keyStream, '\n')
-                print(' Plaintext (binary):', binPlain, '\n')
+                displayResults(
+                    {
+                        "Ciphertext (binary)":binCipher,
+                        "Key stream": keyStream,
+                        "Plaintext (binary)": binPlain
+                    }
+                )
             else:
                 print('No ciphertext selected')
-                continue
+                #continue
+
 
         elif choice == '3':
             plainKey = chooseType()
             if plainKey:
                 cipherKey = CSI2108_KeyExchange_FARROW_10653054.encryption(publicKey, plainKey)
-                print('\n============\n  Results\n============\n')
-                print('Plaintext key:', plainKey, '\n')
-                print('Ciphertext key (binary):', cipherKey, '\n' )
+
+                displayResults(
+                    {
+                        "Plaintext key":plainKey,
+                        "Ciphertext key (binary)":cipherKey
+                    }
+                )
             else:
                 print('No plaintext key entered')
-                continue
+                #continue
+
 
         elif choice == '4':
             cipherKey = chooseType()
             if cipherKey:
                 plainKey = CSI2108_KeyExchange_FARROW_10653054.decryption(publicKey[0], privateKey,cipherKey)
-                print('\n============\n  Results\n============\n')
-                print('Cipher key (binary):', cipherKey)
-                print('Plain key (binary):', plainKey)
+
+                displayResults(
+                    {
+                        "Cipher key (binary)":cipherKey,
+                        "Plain key (binary)": plainKey
+                    }
+                )
             else:
                 print('No ciphertext key entered')
-                continue
+                #continue
             
         elif choice == '5':
             plainText = chooseType()
             if plainText:
                 digest = CSI2108_HashFunction_FARROW_10653054.hashFunction(plainText)
+
+                displayResults(
+                    {
+                        "Plaintext (binary)": plainText
+                        "Hash digest": digest
+                    }
+                ) 
+                '''
                 print('\n============\n  Results\n============\n')
                 print('\n Plaintext (binary):', plainText)
                 print('\n Hash Digest:', digest)
+                '''
             else:
                 print('No plaintext entered')
-                continue
+                #continue
 
         elif choice == '6':
             pass
@@ -95,6 +121,7 @@ def optionsMenu():
             pass
         else:
             print('not an option')
+
 
 
 def chooseType():
@@ -130,10 +157,26 @@ def chooseType():
                 binplainORcipher += str(binLetter)
         
         return binplainORcipher
+    
+
+def displayResults(resultDictionary):
+    print('\n============\n  Results\n============\n')
+
+    for key in resultDictionary:
+        print(key, ':', resultDictionary[key], '\n')
 
 
-####!!!!!!MUST DEAL WITH ENTERED TEXT THAT IS NEEDING CONVERSION OR IS ALREADY IN BINARY. SIMPLE SOLUTION BUT TOO TIRED TO DO CURRENTLY.
+
+
 
 #starts program
 if __name__ == '__main__':
     optionsMenu()
+
+
+
+
+#
+#
+
+#need RSA key creation stuff to go into its own file (it is used by two seperate tasks, 2 seperate code copies) <--- NOT GOOD!

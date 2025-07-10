@@ -9,6 +9,8 @@ LFSR4values = [1,0,1,1,0,1,0,0,1,1,1,0,1,1,0,1,0,1]
 #Encrypts plaintext based on chosen LFSR values
 def encrypt(X):
     
+
+    ''' NONCE IS MEANT TO GO INTO THE KEYSTREAM TO MAKE THE KEYSTREAMS UNIQUELY DIFFERENT NOT THE PLAINTEXT BINARY!!!!! CHANGE THIS!!!'''
     nonce = random.randint(5000000, 1000000000000)
     #convert binary to decimal
     blockInt = int(X, 2)
