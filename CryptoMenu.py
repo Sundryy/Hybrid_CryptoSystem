@@ -169,6 +169,6 @@ if __name__ == '__main__':
 
 
 #LIST OF THINGS TO FIX
-# 3. Checking for primality is broken (float number is too high for python to deal with)
+# 3. Primality is broken (float number is too high for python to deal with)
 # 4. Must name and fix up chooseType(), making it clear what you are entering
-# 5. overall check code quality of stream cipher
+# 6. nest LFSR arrays into another array -> will shorten length of code but requires all code to be changed in that portion

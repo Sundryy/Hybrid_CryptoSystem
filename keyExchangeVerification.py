@@ -5,8 +5,7 @@ import re
 def encryption(publicKey, x):
     #array of plaintext blocks
     blocks = []
-    #array of plaintext block lengths (for padding leading zero's)
-    blockLengths = []
+
     plaintextDecimals = []
     #array of encrypted blocks
     encryptedBlocks = []
@@ -14,12 +13,13 @@ def encryption(publicKey, x):
     encryptedBlockDecimals = []
 
     encryptedKey = ''
-    
+    '''============================'''
     #split key into 4090-bit blocks
     for bit in range(0, len(x), 4090):
         #store plaintext block into array 
         block = str(x[bit: bit + 4090])
         blocks.append(block)
+    '''============================'''
 
     #find block lengths and perform encryptions
     for block in range(len(blocks)):

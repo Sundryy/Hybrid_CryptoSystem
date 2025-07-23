@@ -1,7 +1,7 @@
 import random
 
 #Encrypts plaintext based on chosen LFSR values
-def encrypt(X):
+def encrypt(binX):
     LFSR1 = ['/','/','/','/','/','/','/','/','/','/','/','/','/','/','/','/',1,0,1]
     LFSR2 = ['/','/','/','/','/','/','/','/','/','/','/','/','/','/','/','/',0,0]
     LFSR3 = ['/','/','/','/','/','/','/','/','/','/','/','/','/','/','/','/',0]
@@ -20,11 +20,10 @@ def encrypt(X):
         LFSR3[bit] = int(LFSR3Nonce[bit])
         LFSR4[bit] = int(LFSR4Nonce[bit])
 
-    tempVal = None
     y = ''
-    k = []
+    kStream = ''
     clocks = 0
-    binX = X
+    
 
     #performs as many clocks as needed to generate enough bits in keystream
     while clocks != len(binX):
@@ -84,21 +83,12 @@ def encrypt(X):
                 tempBit4 = tempBit4_2
 
         #generate bit of keystream from flip-flop 0 outputs
-        passoff5 = (passoff1 + passoff2) % 2
-        passoff6 = (passoff3 + passoff4) % 2
-        #save bit to keystream
-        k.append((passoff5 + passoff6) % 2)
+        kStream += str((int(passoff1) + int(passoff2) + int(passoff3) + int(passoff4)) % 2)
         clocks += 1
-
-    #FOR MARKING PURPOSES
-    kStream = ''
-    for bit in range(len(k)):
-        kStream += str(k[bit])
-
 
     #XOR keystream and binary of plaintext
     for bit in range(len(binX)):
-        y += str((int(binX[bit]) + k[bit]) % 2)
+        y += str((int(binX[bit]) + int(kStream[bit])) % 2)
     
     #returns encrypted ciphertext
     return kStream, y
@@ -119,13 +109,3 @@ def decrypt(key, y):
         plaintext += chr(int(bits, 2))
 
     return plaintext
-
-
-
-
-if __name__ == '__main__':
-    x = 'test'
-    y = encrypt(x)
-
-    print(y)
-

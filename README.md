@@ -1,5 +1,12 @@
+NOTE. This project is building upon a two university assignments for the 'Cryptographic Concepts' unit. Within the branch 'University_Version' were the files submitted for assignments. Marks achieved are below.
+
 34/35 Portfolio Part 1 (Stream cipher & Block cipher)
-35/35 Portfolio Part 2 (RSA key exchange, Hash function & RSA signature
+35/35 Portfolio Part 2 (RSA key exchange, Hash function & RSA signature)
+28.5/30 Technical Report (Investigated )
+
+I am adding features overtime and hope you will watch this page closely :)
+
+
 
 
 My personal list of things I wish to do with this crypto system
